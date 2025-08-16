@@ -82,50 +82,19 @@ jar {
 // configure the maven publication
 publishing {
     publications {
-        create("mavenJava", MavenPublication) {
-            artifactId = project.archives_base_name
+        mavenJava(MavenPublication) {
             from components.java
-            
-            pom {
-                name = 'KeyBlocker'
-                description = 'API y mod para bloquear y ocultar teclas dinámicamente en Minecraft'
-                url = 'https://github.com/JaviviDev/KeyBlocker'
-                
-                licenses {
-                    license {
-                        name = 'MIT License'
-                        url = 'https://opensource.org/licenses/MIT'
-                    }
-                }
-                
-                developers {
-                    developer {
-                        id = 'javivi'
-                        name = 'Javivi'
-                    }
-                }
-                
-                scm {
-                    connection = 'scm:git:https://github.com/JaviviDev/KeyBlocker.git'
-                    developerConnection = 'scm:git:ssh://github.com/JaviviDev/KeyBlocker.git'
-                    url = 'https://github.com/JaviviDev/KeyBlocker'
-                }
-            }
         }
     }
-
     repositories {
-        // Para publicar en Maven Central o repositorios personalizados
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/JaviviDev/KeyBlocker")
+            url = uri("https://maven.pkg.github.com/javivi09dev/KeyBlocker")
+            
             credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+                username = System.getenv("GPR_USER")
+                password = System.getenv("GPR_TOKEN")
             }
         }
-        
-        // Para publicar localmente (./gradlew publishToMavenLocal)
-        mavenLocal()
     }
 }
