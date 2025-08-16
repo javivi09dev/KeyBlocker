@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.javivi.kb.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "keyblocker.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+    "KeyboardHandlerMixin",
+    "KeyBindingMixin",
+    "KeyBindingEntryMixin",
+    "CategoryEntryMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
