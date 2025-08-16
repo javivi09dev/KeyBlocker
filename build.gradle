@@ -84,13 +84,13 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+            artifactId = "keyblocker"
         }
     }
     repositories {
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/javivi09dev/KeyBlocker")
-            
             credentials {
                 username = System.getenv("GPR_USER")
                 password = System.getenv("GPR_TOKEN")
