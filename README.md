@@ -16,6 +16,6 @@ repositories {
 }
 
 dependencies {
-    modImplementation "me.javivi:keyblocker:keyblocker_version"
+    modImplementation "me.javivi:keyblocker:{project.keyblocker_version}"
 }
 ```
