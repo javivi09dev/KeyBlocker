@@ -9,13 +9,10 @@
 
 ```gradle
 repositories {
-    maven {
-        name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/javivi09dev/KeyBlocker")
-    }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    modImplementation "me.javivi:keyblocker:{project.keyblocker_version}"
+    modImplementation "com.github.javivi09dev:KeyBlocker:v${project.keyblocker_version}"
 }
 ```
