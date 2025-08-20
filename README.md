@@ -11,11 +11,11 @@
 repositories {
     maven {
         name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/JaviviDev/KeyBlocker")
+        url = uri("https://maven.pkg.github.com/javivi09dev/KeyBlocker")
     }
 }
 
 dependencies {
-    modImplementation "me.javivi:keyblocker:1.0.0"
+    modImplementation "me.javivi:keyblocker:{project.keyblocker_version}"
 }
 ```
