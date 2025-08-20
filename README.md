@@ -2,7 +2,7 @@
 
 [![Fabric API](https://img.shields.io/badge/Fabric%20API-Compatible-green.svg)](https://fabricmc.net/)
 [![Minecraft](https://img.shields.io/badge/Minecraft-1.21.1-brightgreen.svg)](https://minecraft.net/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![](https://jitpack.io/v/javivi09dev/KeyBlocker.svg)](https://jitpack.io/#javivi09dev/KeyBlocker)
 
 ### Maven
 
