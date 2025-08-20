@@ -16,7 +16,7 @@ public interface KeyBlockerAPI {
     }
     
     /**
-     * Blocks a key completely - hides from menu and disables functionality.
+     * Blocks a key completely 
      */
     boolean blockKey(String keyBinding, Collection<ServerPlayerEntity> players);
     

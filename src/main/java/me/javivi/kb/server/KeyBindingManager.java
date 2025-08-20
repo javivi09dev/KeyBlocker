@@ -10,16 +10,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class KeyBindingManager {
     private static final KeyBindingManager INSTANCE = new KeyBindingManager();
     
-    // Almacena las KeyBindings por jugador (UUID -> Set de nombres de teclas)
     private final ConcurrentHashMap<UUID, Set<String>> playerKeyBindings = new ConcurrentHashMap<>();
     
-    // Almacena las categorías por jugador (UUID -> Set de nombres de categorías)
     private final ConcurrentHashMap<UUID, Set<String>> playerCategories = new ConcurrentHashMap<>();
     
-    // Cache global de todas las KeyBindings conocidas
     private final Set<String> allKnownKeyBindings = new HashSet<>();
     
-    // Cache global de todas las categorías conocidas
     private final Set<String> allKnownCategories = new HashSet<>();
     
     private KeyBindingManager() {}
@@ -32,7 +28,6 @@ public class KeyBindingManager {
         Set<String> keySet = new HashSet<>(keyBindings);
         playerKeyBindings.put(playerId, keySet);
         
-        // Actualizar el cache global
         synchronized (allKnownKeyBindings) {
             allKnownKeyBindings.addAll(keyBindings);
         }
@@ -42,7 +37,6 @@ public class KeyBindingManager {
         Set<String> categorySet = new HashSet<>(categories);
         playerCategories.put(playerId, categorySet);
         
-        // Actualizar el cache global
         synchronized (allKnownCategories) {
             allKnownCategories.addAll(categories);
         }
@@ -55,12 +49,48 @@ public class KeyBindingManager {
     
     public List<String> getAllKnownKeyBindings() {
         synchronized (allKnownKeyBindings) {
+            if (allKnownKeyBindings.isEmpty()) {
+                return List.of(
+                    "key.screenshot",
+                    "key.forward",
+                    "key.back",
+                    "key.left",
+                    "key.right",
+                    "key.jump",
+                    "key.sneak",
+                    "key.sprint",
+                    "key.inventory",
+                    "key.swapHands",
+                    "key.drop",
+                    "key.use",
+                    "key.attack",
+                    "key.pickItem",
+                    "key.chat",
+                    "key.playerlist",
+                    "key.command",
+                    "key.togglePerspective",
+                    "key.smoothCamera",
+                    "key.fullscreen",
+                    "key.spectatorOutlines"
+                );
+            }
             return new ArrayList<>(allKnownKeyBindings);
         }
     }
     
     public List<String> getAllKnownCategories() {
-        synchronized (allKnownCategories) {
+        synchronized (allKnownCategories) {     
+            if (allKnownCategories.isEmpty()) {
+                return List.of(
+                    "key.categories.movement",
+                    "key.categories.gameplay",
+                    "key.categories.inventory",
+                    "key.categories.creative",
+                    "key.categories.multiplayer",
+                    "key.categories.ui",
+                    "key.categories.misc"
+                );
+            }
             return new ArrayList<>(allKnownCategories);
         }
     }

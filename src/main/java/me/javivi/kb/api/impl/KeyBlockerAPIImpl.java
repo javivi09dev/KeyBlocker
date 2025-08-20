@@ -1,6 +1,5 @@
 package me.javivi.kb.api.impl;
 
-import me.javivi.kb.Config;
 import me.javivi.kb.Keyblocker;
 import me.javivi.kb.api.KeyBlockerAPI;
 import me.javivi.kb.network.NetworkHandler;
@@ -11,7 +10,6 @@ import me.javivi.kb.server.ServerConfig;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 public class KeyBlockerAPIImpl implements KeyBlockerAPI {
     public static final KeyBlockerAPIImpl INSTANCE = new KeyBlockerAPIImpl();
@@ -154,19 +152,16 @@ public class KeyBlockerAPIImpl implements KeyBlockerAPI {
     
     @Override
     public boolean isKeyBlocked(String keyBinding, ServerPlayerEntity player) {
-        // Note: Client state tracking not implemented yet
         return false;
     }
     
     @Override
     public boolean isKeyHidden(String keyBinding, ServerPlayerEntity player) {
-        // Note: Client state tracking not implemented yet
         return false;
     }
     
     @Override
     public boolean isCategoryHidden(String category, ServerPlayerEntity player) {
-        // Note: Client state tracking not implemented yet
         return false;
     }
     

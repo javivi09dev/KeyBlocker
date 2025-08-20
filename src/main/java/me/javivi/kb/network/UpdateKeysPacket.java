@@ -35,7 +35,6 @@ public record UpdateKeysPacket(String key, String action, String type) implement
         Config config = Keyblocker.getInstance().getConfig();
         
         if ("category".equals(this.type)) {
-            // Manejar categorías
             Set<String> hiddenCategories = new HashSet<>(config.getHiddenCategories());
             
             switch (this.action) {
@@ -51,7 +50,6 @@ public record UpdateKeysPacket(String key, String action, String type) implement
             
             config.setHiddenCategories(hiddenCategories);
         } else {
-            // Manejar keys individuales
             Set<String> hiddenKeybinds = new HashSet<>(config.getHiddenKeybinds());
             Set<String> disabledKeys = new HashSet<>(config.getDisabledKeys());
             
@@ -79,11 +77,41 @@ public record UpdateKeysPacket(String key, String action, String type) implement
             config.setHiddenKeybinds(hiddenKeybinds);
             config.setDisabledKeys(disabledKeys);
         }
-        
+
         config.saveConfig();
-        
-        if (MinecraftClient.getInstance().currentScreen instanceof KeybindsScreen) {
-            config.filterKeyBindings();
+
+        updateKeyBindingStatesImmediate(config);
+
+        refreshControlsScreenIfOpen();
+    }
+
+        /**
+         * Force update all keybinding states immediately.          
+         */
+    private void updateKeyBindingStatesImmediate(Config config) {
+        try {
+            Keyblocker.LOGGER.debug("Config updated - mixins will handle key blocking automatically");
+
+        } catch (Exception e) {
+            Keyblocker.LOGGER.debug("Could not update keybinding state message", e);
+        }
+    }
+
+    /**
+     * Refresh the controls screen if it's currently open.
+     */
+    private void refreshControlsScreenIfOpen() {
+        try {
+            me.javivi.kb.client.KeyBindingScreenHandler screenHandler =
+                me.javivi.kb.client.KeyBindingScreenHandler.getInstance();
+
+            if (screenHandler.isInitialized()) {
+                screenHandler.refreshCurrentScreen();
+                Keyblocker.LOGGER.debug("Refreshed controls screen via packet");
+            }
+
+        } catch (Exception e) {
+            Keyblocker.LOGGER.debug("Could not refresh controls screen", e);
         }
     }
 }

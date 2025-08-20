@@ -7,10 +7,8 @@
   "mixins": [
   ],
   "client": [
-    "KeyboardHandlerMixin",
     "KeyBindingMixin",
-    "KeyBindingEntryMixin",
-    "CategoryEntryMixin"
+    "KeyboardHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
