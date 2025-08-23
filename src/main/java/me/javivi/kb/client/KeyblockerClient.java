@@ -35,7 +35,7 @@ public class KeyblockerClient implements ClientModInitializer {
             }
         });
 
-        Keyblocker.LOGGER.info("KeyBlocker client initialized with mixin-based keybinding interception!");
+        Keyblocker.LOGGER.info("KeyBlocker client initialized!");
     }
     
     private void sendAllKeyBindingsAndCategoriesToServer() {

@@ -11,11 +11,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * New approach: Instead of trying to filter keybindings after they're displayed,
- * we modify the keybinding list before the screen is rendered.
- * This uses a technique similar to what key-binding-hider-mod does.
- */
 public class KeyBindingScreenHandler {
     private static KeyBindingScreenHandler instance;
     private static boolean initialized = false;
@@ -29,9 +24,6 @@ public class KeyBindingScreenHandler {
         return instance;
     }
 
-    /**
-     * Initialize the screen handling system
-     */
     public void initialize() {
         if (initialized) return;
 
@@ -44,18 +36,13 @@ public class KeyBindingScreenHandler {
         }
     }
 
-    /**
-     * Register handlers to intercept controls screen before it renders
-     */
     private void registerScreenHandlers() {
-        // Intercept when the controls screen is about to be opened
         ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             if (screen instanceof ControlsOptionsScreen) {
                 filterKeybindingsBeforeScreenRender(client);
             }
         });
 
-        // Also intercept after init in case the first attempt fails
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             if (screen instanceof ControlsOptionsScreen) {
                 handleControlsScreenAfterInit(screen);
@@ -63,9 +50,6 @@ public class KeyBindingScreenHandler {
         });
     }
 
-    /**
-     * Filter keybindings before the screen renders by modifying the global keybinding array
-     */
     private void filterKeybindingsBeforeScreenRender(MinecraftClient client) {
         try {
             Config config = Keyblocker.getInstance().getConfig();
@@ -93,21 +77,13 @@ public class KeyBindingScreenHandler {
             }
 
             KeyBinding[] filteredArray = filteredList.toArray(new KeyBinding[0]);
-
             allKeyBindingsField.set(client.options, filteredArray);
-
-            if (hiddenCount > 0) {
-                Keyblocker.LOGGER.info("Filtered {} keybindings from controls screen", hiddenCount);
-            }
 
         } catch (Exception e) {
             Keyblocker.LOGGER.debug("Could not filter keybindings before screen render", e);
         }
     }
 
-    /**
-     * Handle controls screen after initialization
-     */
     private void handleControlsScreenAfterInit(Object screen) {
         try {
             Config config = Keyblocker.getInstance().getConfig();
@@ -120,9 +96,6 @@ public class KeyBindingScreenHandler {
         }
     }
 
-    /**
-     * Filter keybinding lists found in the screen object
-     */
     private void filterScreenKeybindingLists(Object screen, Config config) {
         try {
             Class<?> currentClass = screen.getClass();
@@ -157,9 +130,6 @@ public class KeyBindingScreenHandler {
         }
     }
 
-    /**
-     * Filter a KeyBinding array
-     */
     private void filterKeyBindingArray(KeyBinding[] keyArray, Config config, Field field, Object screen) {
         try {
             List<KeyBinding> filteredList = new ArrayList<>();
@@ -186,9 +156,6 @@ public class KeyBindingScreenHandler {
         }
     }
 
-    /**
-     * Filter a KeyBinding list
-     */
     @SuppressWarnings("unchecked")
     private void filterKeyBindingList(List<?> list, Config config) {
         try {
@@ -207,9 +174,6 @@ public class KeyBindingScreenHandler {
         }
     }
 
-    /**
-     * Find the keybindings field in GameOptions class
-     */
     private Field findKeybindingsField(Class<?> gameOptionsClass) {
         try {
             String[] possibleFieldNames = {
@@ -223,20 +187,35 @@ public class KeyBindingScreenHandler {
                 try {
                     Field field = gameOptionsClass.getDeclaredField(fieldName);
                     if (field.getType() == KeyBinding[].class) {
-                        return field;
+                        field.setAccessible(true);
+                        KeyBinding[] testArray = (KeyBinding[]) field.get(MinecraftClient.getInstance().options);
+                        if (testArray != null && testArray.length > 50) {
+                            return field;
+                        }
                     }
                 } catch (NoSuchFieldException e) {
-                    // Try next field name
                 }
             }
 
-            // If field names don't work, search by type
-            Field[] fields = gameOptionsClass.getDeclaredFields();
-            for (Field field : fields) {
+            Field bestField = null;
+            int maxSize = 0;
+            
+            Field[] allFields = gameOptionsClass.getDeclaredFields();
+            for (Field field : allFields) {
                 if (field.getType() == KeyBinding[].class) {
-                    return field;
+                    try {
+                        field.setAccessible(true);
+                        KeyBinding[] testArray = (KeyBinding[]) field.get(MinecraftClient.getInstance().options);
+                        if (testArray != null && testArray.length > maxSize) {
+                            maxSize = testArray.length;
+                            bestField = field;
+                        }
+                    } catch (Exception e) { 
+                    }
                 }
             }
+            
+            return bestField;
 
         } catch (Exception e) {
             Keyblocker.LOGGER.debug("Could not find keybindings field", e);
@@ -245,29 +224,19 @@ public class KeyBindingScreenHandler {
         return null;
     }
 
-    /**
-     * Determine if a keybinding should be hidden
-     */
     private boolean shouldHideKeyBinding(KeyBinding keyBinding, Config config) {
         if (keyBinding == null) return false;
 
         String translationKey = keyBinding.getTranslationKey();
         if (translationKey == null) return false;
 
-        // Hide if it's disabled (blocked) or explicitly hidden
         return config.isKeyDisabled(translationKey) || config.isKeybindHidden(translationKey);
     }
 
-    /**
-     * Check if the system is initialized
-     */
     public boolean isInitialized() {
         return initialized;
     }
 
-    /**
-     * Force refresh the current controls screen if open
-     */
     public void refreshCurrentScreen() {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.currentScreen instanceof ControlsOptionsScreen) {

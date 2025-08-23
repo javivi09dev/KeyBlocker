@@ -15,25 +15,21 @@ public class KeyBindingMixin {
     @Shadow
     private String translationKey;
 
-    @Shadow
-    private int timesPressed;
-
     @Inject(method = "wasPressed", at = @At("HEAD"), cancellable = true)
-    public void onWasPressed(CallbackInfoReturnable<Boolean> cir) {
-        if (shouldBlockKey()) {
-            this.timesPressed = 0;
+    public void blockWasPressed(CallbackInfoReturnable<Boolean> cir) {
+        if (isKeyBlocked()) {
             cir.setReturnValue(false);
         }
     }
+
     @Inject(method = "isPressed", at = @At("HEAD"), cancellable = true)
-    public void onIsPressed(CallbackInfoReturnable<Boolean> cir) {
-        if (shouldBlockKey()) {
+    public void blockIsPressed(CallbackInfoReturnable<Boolean> cir) {
+        if (isKeyBlocked()) {
             cir.setReturnValue(false);
         }
     }
 
-
-    private boolean shouldBlockKey() {
+    private boolean isKeyBlocked() {
         try {
             if (this.translationKey == null) {
                 return false;
@@ -48,5 +44,5 @@ public class KeyBindingMixin {
         } catch (Exception e) {
             return false;
         }
-    } 
+    }
 }
